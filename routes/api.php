@@ -1,11 +1,10 @@
 <?php
 
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProfileController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use Laravel\Socialite\Facades\Socialite;
 
 Route::get("/401", [AuthController::class, 'unauthorized'])->name('login');
 
@@ -22,5 +21,17 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:api')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('me', [ProfileController::class, 'me']);
+    });
+});
+
+Route::prefix('communities')->group(function () {
+    Route::get('', [CommunityController::class, 'index']);
+    Route::get('{communityId}', [CommunityController::class, 'show']);
+
+    Route::middleware('auth:api')->group(function () {
+        Route::post('', [CommunityController::class, 'store']);
+        Route::delete('{communityId}', [CommunityController::class, 'delete']);
+        Route::post('join', [CommunityController::class, 'join']);
+        Route::post('leave', [CommunityController::class, 'leave']);
     });
 });

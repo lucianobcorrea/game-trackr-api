@@ -1,0 +1,452 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "GameTrackr Api",
+        "version": "0.1"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "GameTrackr API Server"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "description": "Creates a new user account, generates an access token, and returns the newly registered user detail.",
+                "operationId": "7ee3e64f2219bb2649574947a7c18591",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "The full name of the user",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "description": "A unique email address",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "description": "The password for the account (minimum 6 characters)",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123",
+                                        "minLength": 6
+                                    },
+                                    "password_confirmation": {
+                                        "description": "Must match the password field",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123",
+                                        "minLength": 6
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "null",
+                                            "example": null
+                                        },
+                                        "token": {
+                                            "description": "JWT Access Token",
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User created successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The email has already been taken."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User login",
+                "description": "Authenticates the user with email and password and returns a JWT access token.",
+                "operationId": "94b7659ea7e336519c4ff798e2e1c181",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "null",
+                                            "example": null
+                                        },
+                                        "token": {
+                                            "description": "JWT Access Token",
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged in successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials / Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The email field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/validate": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Validate JWT Token",
+                "description": "Verifies if the provided JWT Token is valid and returns the current user profile.",
+                "operationId": "7737ab360045116081d3801bdb94ad19",
+                "responses": {
+                    "200": {
+                        "description": "Token is valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "null",
+                                            "example": null
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout user",
+                "description": "Invalidates the current JWT token, logging the user out of the application.",
+                "operationId": "282f4d8a81e9f5075b61757c5df24208",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "null",
+                                            "example": null
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error during logout",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The token has been blacklisted"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/401": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Unauthorized response fallback",
+                "description": "The fallback route returned for unauthenticated requests.",
+                "operationId": "ce7616fb59e8bfef19941ca683700c3b",
+                "responses": {
+                    "401": {
+                        "description": "Unauthorized request fallback",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "title": "User",
+                "description": "User model schema",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com"
+                    },
+                    "google_id": {
+                        "type": "string",
+                        "example": "1234567890",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-06-25T10:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-06-25T10:00:00.000000Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Enter JWT Bearer token to access protected endpoints",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        }
+    ]
+}

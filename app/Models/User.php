@@ -31,6 +31,11 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function communities()
+    {
+        return $this->belongsToMany(Community::class, 'community_members');
+    }
+
     public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
