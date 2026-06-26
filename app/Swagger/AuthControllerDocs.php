@@ -202,6 +202,33 @@ class AuthControllerDocs
     )]
     public function logout() {}
 
+    #[OA\Post(
+        path: "/auth/refresh",
+        summary: "Refresh JWT Token",
+        description: "Refreshes the current JWT token and returns a new access token.",
+        security: [["bearerAuth" => []]],
+        tags: ["Authentication"]
+    )]
+    #[OA\Response(
+        response: 200,
+        description: "Token refreshed successfully",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "token", type: "string", example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", description: "New JWT Access Token")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: "Invalid or missing token",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "string", example: "Unauthorized")
+            ]
+        )
+    )]
+    public function refresh() {}
+
     #[OA\Get(
         path: "/401",
         summary: "Unauthorized response fallback",

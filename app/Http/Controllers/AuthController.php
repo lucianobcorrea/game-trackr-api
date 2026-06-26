@@ -84,4 +84,10 @@ class AuthController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function refresh()
+    {
+        $token = auth()->refresh();
+        return response()->json(['token' => $token]);
+    }
 }

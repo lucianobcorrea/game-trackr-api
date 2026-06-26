@@ -13,6 +13,7 @@ Route::prefix('auth')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post("validate", [AuthController::class, "validateToken"]);
     Route::post("logout", [AuthController::class, "logout"]);
+    Route::post('refresh', [AuthController::class, 'refresh']);
 
     Route::get('google/redirect', [GoogleAuthController::class, 'redirect']);
     Route::get('google/callback', [GoogleAuthController::class, 'callback']);
