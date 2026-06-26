@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommunityRequest;
 use App\Models\Community;
+use Str;
 
 class CommunityController extends Controller
 {
     public function index()
     {
         $perPage = min((int) request('per_page', 10), 100);
-        $communities = Community::with(['author', 'members'])->paginate($perPage);
+        $communities = Community::with(['author', 'members', 'media'])->paginate($perPage);
         return response()->json($communities);
     }
 
@@ -31,6 +32,7 @@ class CommunityController extends Controller
     {
         $data = $request->validated();
         $data['author_id'] = $request->user()->id;
+        $data['slug'] = Str::slug($data['title']);
 
         $community = Community::create($data);
 
