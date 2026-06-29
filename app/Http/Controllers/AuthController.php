@@ -131,28 +131,70 @@ class AuthController extends Controller
         ]);
     }
 
+    public function verifyResetCode(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'code' => 'required',
+        ]);
+
+        $record = PasswordResetCode::where('email', $request->email)->first();
+
+        if (!$record) {
+            return response()->json([
+                'error' => 'Invalid code'
+            ], 400);
+        }
+
+        if (!hash_equals($record->code, hash('sha256', $request->code))) {
+            return response()->json([
+                'error' => 'Invalid code'
+            ], 400);
+        }
+
+        if ($record->expires_at->isPast()) {
+            return response()->json([
+                'error' => 'Code expired'
+            ], 400);
+        }
+
+        if ($record->used_at != null) {
+            return response()->json([
+                'error' => 'Code already used'
+            ], 400);
+        }
+
+        return response()->json([
+            'error' => null,
+            'message' => 'Code verified successfully'
+        ], 200);
+    }
+
     public function resetPassword(Request $request)
     {
         $client = $request->input('client', 'web');
 
         if ($client === 'mobile') {
             $request->validate([
-                'code' => 'required',
                 'email' => 'required|email',
                 'password' => 'required|min:8|confirmed',
             ]);
 
             $record = PasswordResetCode::where('email', $request->email)->first();
 
-            if (!$record || !hash_equals($record->code, hash('sha256', $request->code))) {
-                return response()->json(['error' => 'Invalid code'], 400);
+            if (!$record) {
+                return response()->json(['error' => 'Invalid request'], 400);
+            }
+
+            if (!$record->verified_at) {
+                return response()->json(['error' => 'Code not verified'], 400);
             }
 
             if ($record->expires_at->isPast()) {
                 return response()->json(['error' => 'Code expired'], 400);
             }
 
-            if ($record->used_at != null) {
+            if ($record->used_at) {
                 return response()->json(['error' => 'Code already used'], 400);
             }
 
@@ -187,4 +229,4 @@ class AuthController extends Controller
                 : response()->json(['error' => 'Password reset failed'], 500);
         }
     }
-} 
+}

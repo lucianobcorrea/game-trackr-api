@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('email');
             $table->string('code');
             $table->timestamp('expires_at');
+            $table->timestamp('verified_at')->nullable();
             $table->timestamp('used_at')->nullable();
             $table->timestamps();
         });

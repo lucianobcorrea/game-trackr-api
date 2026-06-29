@@ -495,13 +495,106 @@
                 }
             }
         },
+        "/auth/verify-reset-code": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify password reset code",
+                "description": "Verifies the 6-digit password reset code sent to the mobile client.",
+                "operationId": "efd7e2be20761a06fa36d897548af9fb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "code": {
+                                        "description": "The 6-digit code sent via email",
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Code verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "null",
+                                            "example": null
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code verified successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid, expired, or already used verification code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid code"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The code field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/auth/reset-password": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Reset user password",
-                "description": "Resets the user's password using either the reset token (web client) or verification code (mobile client).",
+                "description": "Resets the user's password using either the reset token (web client) or after code verification (mobile client).",
                 "operationId": "3126b7c0bf7d24618d4eecde175ba477",
                 "requestBody": {
                     "required": true,
@@ -545,11 +638,6 @@
                                         "description": "Required for web client: The reset token sent via email link",
                                         "type": "string",
                                         "example": "example-reset-token"
-                                    },
-                                    "code": {
-                                        "description": "Required for mobile client: The 6-digit code sent via email",
-                                        "type": "string",
-                                        "example": "123456"
                                     }
                                 },
                                 "type": "object"
@@ -580,14 +668,14 @@
                         }
                     },
                     "400": {
-                        "description": "Invalid, expired, or already used verification code (mobile client only)",
+                        "description": "Invalid request, code not verified, expired, or already used code (mobile client only)",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "error": {
                                             "type": "string",
-                                            "example": "Invalid code"
+                                            "example": "Code not verified"
                                         }
                                     },
                                     "type": "object"

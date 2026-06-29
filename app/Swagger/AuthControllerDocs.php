@@ -267,9 +267,56 @@ class AuthControllerDocs
     public function forgotPassword() {}
 
     #[OA\Post(
+        path: "/auth/verify-reset-code",
+        summary: "Verify password reset code",
+        description: "Verifies the 6-digit password reset code sent to the mobile client.",
+        tags: ["Authentication"]
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["email", "code"],
+            properties: [
+                new OA\Property(property: "email", type: "string", format: "email", example: "john.doe@example.com"),
+                new OA\Property(property: "code", type: "string", example: "123456", description: "The 6-digit code sent via email")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: "Code verified successfully",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "null", example: null),
+                new OA\Property(property: "message", type: "string", example: "Code verified successfully")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 400,
+        description: "Invalid, expired, or already used verification code",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "string", example: "Invalid code")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 422,
+        description: "Validation Error",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "The code field is required."),
+                new OA\Property(property: "errors", type: "object")
+            ]
+        )
+    )]
+    public function verifyResetCode() {}
+
+    #[OA\Post(
         path: "/auth/reset-password",
         summary: "Reset user password",
-        description: "Resets the user's password using either the reset token (web client) or verification code (mobile client).",
+        description: "Resets the user's password using either the reset token (web client) or after code verification (mobile client).",
         tags: ["Authentication"]
     )]
     #[OA\RequestBody(
@@ -281,8 +328,7 @@ class AuthControllerDocs
                 new OA\Property(property: "password", type: "string", format: "password", minLength: 8, example: "newsecret123"),
                 new OA\Property(property: "password_confirmation", type: "string", format: "password", minLength: 8, example: "newsecret123"),
                 new OA\Property(property: "client", type: "string", enum: ["web", "mobile"], default: "web", example: "mobile", description: "The client type resetting the password"),
-                new OA\Property(property: "token", type: "string", example: "example-reset-token", description: "Required for web client: The reset token sent via email link"),
-                new OA\Property(property: "code", type: "string", example: "123456", description: "Required for mobile client: The 6-digit code sent via email")
+                new OA\Property(property: "token", type: "string", example: "example-reset-token", description: "Required for web client: The reset token sent via email link")
             ]
         )
     )]
@@ -298,10 +344,10 @@ class AuthControllerDocs
     )]
     #[OA\Response(
         response: 400,
-        description: "Invalid, expired, or already used verification code (mobile client only)",
+        description: "Invalid request, code not verified, expired, or already used code (mobile client only)",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "error", type: "string", example: "Invalid code")
+                new OA\Property(property: "error", type: "string", example: "Code not verified")
             ]
         )
     )]
