@@ -229,6 +229,108 @@ class AuthControllerDocs
     )]
     public function refresh() {}
 
+    #[OA\Post(
+        path: "/auth/forgot-password",
+        summary: "Send password reset link",
+        description: "Sends a password reset link to the user's email address if it exists.",
+        tags: ["Authentication"]
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["email"],
+            properties: [
+                new OA\Property(property: "email", type: "string", format: "email", example: "john.doe@example.com", description: "The email address of the user")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: "Password reset link sent successfully (or mock response for privacy)",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "null", example: null),
+                new OA\Property(property: "message", type: "string", example: "If an account exists for this email address, you will receive a password reset link shortly.")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 422,
+        description: "Validation Error",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "The email field is required."),
+                new OA\Property(property: "errors", type: "object")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 500,
+        description: "Failed to send reset link email",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "string", example: "Email not sent")
+            ]
+        )
+    )]
+    public function forgotPassword() {}
+
+    #[OA\Post(
+        path: "/auth/reset-password/{token}",
+        summary: "Reset user password",
+        description: "Resets the user's password using the token sent in the reset link.",
+        tags: ["Authentication"]
+    )]
+    #[OA\Parameter(
+        name: "token",
+        in: "path",
+        required: true,
+        description: "The password reset token",
+        schema: new OA\Schema(type: "string")
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ["email", "password", "password_confirmation", "token"],
+            properties: [
+                new OA\Property(property: "email", type: "string", format: "email", example: "john.doe@example.com"),
+                new OA\Property(property: "password", type: "string", format: "password", minLength: 8, example: "newsecret123"),
+                new OA\Property(property: "password_confirmation", type: "string", format: "password", minLength: 8, example: "newsecret123"),
+                new OA\Property(property: "token", type: "string", example: "example-reset-token")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: "Password reset successfully",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "null", example: null),
+                new OA\Property(property: "message", type: "string", example: "Password reset successfully")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 422,
+        description: "Validation Error",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "The password field is required."),
+                new OA\Property(property: "errors", type: "object")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 500,
+        description: "Password reset failed",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "string", example: "Password reset failed")
+            ]
+        )
+    )]
+    public function resetPassword() {}
+
     #[OA\Get(
         path: "/401",
         summary: "Unauthorized response fallback",
