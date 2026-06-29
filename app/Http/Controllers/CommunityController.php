@@ -33,6 +33,7 @@ class CommunityController extends Controller
         $data = $request->validated();
         $data['author_id'] = $request->user()->id;
         $data['slug'] = Str::slug($data['title']);
+        $data['title'] = str_replace(' ', '', $data['title']);
 
         $community = Community::create($data);
 
