@@ -164,6 +164,8 @@ class AuthController extends Controller
             ], 400);
         }
 
+        $record->update(['verified_at' => now()]);
+
         return response()->json([
             'error' => null,
             'message' => 'Code verified successfully'
@@ -177,7 +179,7 @@ class AuthController extends Controller
         if ($client === 'mobile') {
             $request->validate([
                 'email' => 'required|email',
-                'password' => 'required|min:8|confirmed',
+                'password' => 'required|min:6|confirmed',
             ]);
 
             $record = PasswordResetCode::where('email', $request->email)->first();
