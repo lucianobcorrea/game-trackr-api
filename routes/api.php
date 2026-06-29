@@ -35,7 +35,7 @@ Route::prefix('communities')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::post('', [CommunityController::class, 'store']);
         Route::delete('{communityId}', [CommunityController::class, 'delete']);
-        Route::post('join', [CommunityController::class, 'join']);
-        Route::post('leave', [CommunityController::class, 'leave']);
+        Route::post('join/{communityId}', [CommunityController::class, 'join']);
+        Route::post('leave/{communityId}', [CommunityController::class, 'leave']);
     });
 });

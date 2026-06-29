@@ -12,6 +12,13 @@ class CommunityController extends Controller
     {
         $perPage = min((int) request('per_page', 10), 100);
         $communities = Community::with(['author', 'members', 'media'])->paginate($perPage);
+        $userId = auth()->id();
+
+        $communities->getCollection()->transform(function ($community) use ($userId) {
+            $community->is_member = $community->members->contains('id', $userId);
+            return $community;
+        });
+
         return response()->json($communities);
     }
 
@@ -88,7 +95,7 @@ class CommunityController extends Controller
             ], 404);
         }
 
-        if ($community->members()->where('user_id', auth()->user()->id)->exists()) {
+        if ($community->members()->where('community_members.member_id', auth()->user()->id)->exists()) {
             return response()->json([
                 'error' => 'You are already a member of this community',
             ], 400);
@@ -112,7 +119,7 @@ class CommunityController extends Controller
             ], 404);
         }
 
-        if (!$community->members()->where('user_id', auth()->user()->id)->exists()) {
+        if (!$community->members()->where('community_members.member_id', auth()->user()->id)->exists()) {
             return response()->json([
                 'error' => 'You are not a member of this community',
             ], 400);
