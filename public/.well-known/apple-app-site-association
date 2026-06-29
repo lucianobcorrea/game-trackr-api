@@ -1,9 +1,0 @@
-  {
-    "applinks": {
-      "apps": [],
-      "details": [{
-        "appID": "TEAMID.com.lucasdias.GameTrackr",
-        "paths": ["/auth/*"]
-      }]
-    }
-  }

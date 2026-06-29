@@ -49,6 +49,7 @@ class CommunityController extends Controller
 
         return response()->json([
             'error' => null,
+            'community' => $community,
             'message' => 'Community created successfully',
         ], 201);
     }

@@ -231,8 +231,8 @@ class AuthControllerDocs
 
     #[OA\Post(
         path: "/auth/forgot-password",
-        summary: "Send password reset link",
-        description: "Sends a password reset link to the user's email address if it exists.",
+        summary: "Send password reset link or verification code",
+        description: "Sends a password reset link (web client) or a 6-digit verification code (mobile client) to the user's email address if it exists.",
         tags: ["Authentication"]
     )]
     #[OA\RequestBody(
@@ -240,17 +240,17 @@ class AuthControllerDocs
         content: new OA\JsonContent(
             required: ["email"],
             properties: [
-                new OA\Property(property: "email", type: "string", format: "email", example: "john.doe@example.com", description: "The email address of the user")
+                new OA\Property(property: "email", type: "string", format: "email", example: "john.doe@example.com", description: "The email address of the user"),
+                new OA\Property(property: "client", type: "string", enum: ["web", "mobile"], default: "web", example: "mobile", description: "The client type requesting the reset")
             ]
         )
     )]
     #[OA\Response(
         response: 200,
-        description: "Password reset link sent successfully (or mock response for privacy)",
+        description: "Instructions sent if the email exists",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "error", type: "null", example: null),
-                new OA\Property(property: "message", type: "string", example: "If an account exists for this email address, you will receive a password reset link shortly.")
+                new OA\Property(property: "message", type: "string", example: "If the email exists, instructions were sent.")
             ]
         )
     )]
@@ -264,49 +264,44 @@ class AuthControllerDocs
             ]
         )
     )]
-    #[OA\Response(
-        response: 500,
-        description: "Failed to send reset link email",
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: "error", type: "string", example: "Email not sent")
-            ]
-        )
-    )]
     public function forgotPassword() {}
 
     #[OA\Post(
-        path: "/auth/reset-password/{token}",
+        path: "/auth/reset-password",
         summary: "Reset user password",
-        description: "Resets the user's password using the token sent in the reset link.",
+        description: "Resets the user's password using either the reset token (web client) or verification code (mobile client).",
         tags: ["Authentication"]
-    )]
-    #[OA\Parameter(
-        name: "token",
-        in: "path",
-        required: true,
-        description: "The password reset token",
-        schema: new OA\Schema(type: "string")
     )]
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
-            required: ["email", "password", "password_confirmation", "token"],
+            required: ["email", "password", "password_confirmation"],
             properties: [
                 new OA\Property(property: "email", type: "string", format: "email", example: "john.doe@example.com"),
                 new OA\Property(property: "password", type: "string", format: "password", minLength: 8, example: "newsecret123"),
                 new OA\Property(property: "password_confirmation", type: "string", format: "password", minLength: 8, example: "newsecret123"),
-                new OA\Property(property: "token", type: "string", example: "example-reset-token")
+                new OA\Property(property: "client", type: "string", enum: ["web", "mobile"], default: "web", example: "mobile", description: "The client type resetting the password"),
+                new OA\Property(property: "token", type: "string", example: "example-reset-token", description: "Required for web client: The reset token sent via email link"),
+                new OA\Property(property: "code", type: "string", example: "123456", description: "Required for mobile client: The 6-digit code sent via email")
             ]
         )
     )]
     #[OA\Response(
         response: 200,
-        description: "Password reset successfully",
+        description: "Password reset successful",
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: "error", type: "null", example: null),
-                new OA\Property(property: "message", type: "string", example: "Password reset successfully")
+                new OA\Property(property: "error", type: "string", nullable: true, example: null),
+                new OA\Property(property: "message", type: "string", example: "Password reset successful")
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 400,
+        description: "Invalid, expired, or already used verification code (mobile client only)",
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "error", type: "string", example: "Invalid code")
             ]
         )
     )]
@@ -322,7 +317,7 @@ class AuthControllerDocs
     )]
     #[OA\Response(
         response: 500,
-        description: "Password reset failed",
+        description: "Password reset failed (web client only)",
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: "error", type: "string", example: "Password reset failed")

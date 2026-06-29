@@ -422,8 +422,8 @@
                 "tags": [
                     "Authentication"
                 ],
-                "summary": "Send password reset link",
-                "description": "Sends a password reset link to the user's email address if it exists.",
+                "summary": "Send password reset link or verification code",
+                "description": "Sends a password reset link (web client) or a 6-digit verification code (mobile client) to the user's email address if it exists.",
                 "operationId": "57220708616d141e9a7f9c42bd9c0556",
                 "requestBody": {
                     "required": true,
@@ -439,6 +439,16 @@
                                         "type": "string",
                                         "format": "email",
                                         "example": "john.doe@example.com"
+                                    },
+                                    "client": {
+                                        "description": "The client type requesting the reset",
+                                        "type": "string",
+                                        "example": "mobile",
+                                        "default": "web",
+                                        "enum": [
+                                            "web",
+                                            "mobile"
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -448,18 +458,14 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Password reset link sent successfully (or mock response for privacy)",
+                        "description": "Instructions sent if the email exists",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "error": {
-                                            "type": "null",
-                                            "example": null
-                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "If an account exists for this email address, you will receive a password reset link shortly."
+                                            "example": "If the email exists, instructions were sent."
                                         }
                                     },
                                     "type": "object"
@@ -485,45 +491,18 @@
                                 }
                             }
                         }
-                    },
-                    "500": {
-                        "description": "Failed to send reset link email",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Email not sent"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
                     }
                 }
             }
         },
-        "/auth/reset-password/{token}": {
+        "/auth/reset-password": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "Reset user password",
-                "description": "Resets the user's password using the token sent in the reset link.",
-                "operationId": "d3d024d5fe063b4498a22861728d6b5c",
-                "parameters": [
-                    {
-                        "name": "token",
-                        "in": "path",
-                        "description": "The password reset token",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "description": "Resets the user's password using either the reset token (web client) or verification code (mobile client).",
+                "operationId": "3126b7c0bf7d24618d4eecde175ba477",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -532,8 +511,7 @@
                                 "required": [
                                     "email",
                                     "password",
-                                    "password_confirmation",
-                                    "token"
+                                    "password_confirmation"
                                 ],
                                 "properties": {
                                     "email": {
@@ -553,9 +531,25 @@
                                         "example": "newsecret123",
                                         "minLength": 8
                                     },
+                                    "client": {
+                                        "description": "The client type resetting the password",
+                                        "type": "string",
+                                        "example": "mobile",
+                                        "default": "web",
+                                        "enum": [
+                                            "web",
+                                            "mobile"
+                                        ]
+                                    },
                                     "token": {
+                                        "description": "Required for web client: The reset token sent via email link",
                                         "type": "string",
                                         "example": "example-reset-token"
+                                    },
+                                    "code": {
+                                        "description": "Required for mobile client: The 6-digit code sent via email",
+                                        "type": "string",
+                                        "example": "123456"
                                     }
                                 },
                                 "type": "object"
@@ -565,18 +559,35 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Password reset successfully",
+                        "description": "Password reset successful",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "error": {
-                                            "type": "null",
-                                            "example": null
+                                            "type": "string",
+                                            "example": null,
+                                            "nullable": true
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Password reset successfully"
+                                            "example": "Password reset successful"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid, expired, or already used verification code (mobile client only)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid code"
                                         }
                                     },
                                     "type": "object"
@@ -604,7 +615,7 @@
                         }
                     },
                     "500": {
-                        "description": "Password reset failed",
+                        "description": "Password reset failed (web client only)",
                         "content": {
                             "application/json": {
                                 "schema": {
