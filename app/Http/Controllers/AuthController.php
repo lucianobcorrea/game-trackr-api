@@ -13,6 +13,7 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mail;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -36,10 +37,12 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        $user = auth()->user();
+
         return response()->json([
             'error' => null,
             'token' => $token,
-            'user' => auth()->user(),
+            'user' => $user,
             'message' => 'User created successfully',
         ], 201);
     }
@@ -95,8 +98,13 @@ class AuthController extends Controller
 
     public function refresh()
     {
-        $token = auth()->refresh();
-        return response()->json(['token' => $token]);
+        try {
+            JWTAuth::setToken(request()->bearerToken());
+            $token = JWTAuth::refresh();
+            return response()->json(['token' => $token]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 401);
+        }
     }
 
     public function forgotPassword(Request $request)

@@ -15,7 +15,12 @@ class CommunityController extends Controller
         $userId = auth()->id();
 
         $communities->getCollection()->transform(function ($community) use ($userId) {
-            $community->is_member = $community->members->contains('id', $userId);
+            $community->is_member = $userId
+                ? $community->members()
+                    ->where('users.id', $userId)
+                    ->exists()
+                : false;
+
             return $community;
         });
 
@@ -127,7 +132,7 @@ class CommunityController extends Controller
 
         if ($community->author_id === auth()->user()->id) {
             return response()->json([
-                'error' => 'You cannot leave this community',
+                'error' => 'You are the owner, you cannot leave this community',
             ], 400);
         }
 
