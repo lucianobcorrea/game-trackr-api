@@ -59,8 +59,7 @@ class CommunityController extends Controller
 
         $community->members()->attach($request->user()->id);
 
-        return response()->json([
-            'error' => null,
+        return response()->json([        
             'community' => $community,
             'message' => 'Community created successfully',
         ], 201);
@@ -85,7 +84,6 @@ class CommunityController extends Controller
         $community->delete();
 
         return response()->json([
-            'error' => null,
             'message' => 'Community deleted successfully',
         ]);
     }
@@ -109,7 +107,6 @@ class CommunityController extends Controller
         $community->members()->attach(auth()->user()->id);
 
         return response()->json([
-            'error' => null,
             'message' => 'Community joined successfully',
         ]);
     }
@@ -139,7 +136,6 @@ class CommunityController extends Controller
         $community->members()->detach(auth()->user()->id);
 
         return response()->json([
-            'error' => null,
             'message' => 'Community left successfully',
         ]);
     }

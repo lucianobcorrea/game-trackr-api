@@ -7,6 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Mail\PasswordResetCodeMail;
 use App\Models\PasswordResetCode;
 use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
@@ -17,6 +18,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        private readonly AuthService $authService
+    ) {
+    }
+
     public function unauthorized()
     {
         return response()->json(['error' => 'Unauthorized'], 401);
@@ -40,7 +46,6 @@ class AuthController extends Controller
         $user = auth()->user();
 
         return response()->json([
-            'error' => null,
             'token' => $token,
             'user' => $user,
             'message' => 'User created successfully',
@@ -49,27 +54,10 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $data = $request->validated();
-
-        $user = User::where('email', $data['email'])->first();
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
-
-        $credentials = [
-            'email' => $data['email'],
-            'password' => $data['password'],
-        ];
-
-        $token = auth()->attempt($credentials);
-        if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
+        $result = $this->authService->login($request->validated());
         return response()->json([
-            'error' => null,
-            'token' => $token,
-            'user' => $user,
+            'token' => $result['token'],
+            'user' => $result['user'],
             'message' => 'Logged in successfully',
         ], 200);
     }
@@ -78,7 +66,6 @@ class AuthController extends Controller
     {
         $user = auth()->user();
         return response()->json([
-            'error' => null,
             'user' => $user,
         ], 200);
     }
@@ -88,9 +75,8 @@ class AuthController extends Controller
         try {
             auth()->logout();
             return response()->json([
-                'error' => null,
                 'message' => 'Successfully logged out',
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -175,7 +161,6 @@ class AuthController extends Controller
         $record->update(['verified_at' => now()]);
 
         return response()->json([
-            'error' => null,
             'message' => 'Code verified successfully'
         ], 200);
     }
@@ -235,7 +220,7 @@ class AuthController extends Controller
             );
 
             return $status === Password::PASSWORD_RESET
-                ? response()->json(['error' => null, 'message' => 'Password reset successfully'], 200)
+                ? response()->json(['message' => 'Password reset successfully'], 200)
                 : response()->json(['error' => 'Password reset failed'], 500);
         }
     }

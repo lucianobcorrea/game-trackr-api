@@ -10,7 +10,6 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         return response()->json([
-            'error' => null,
             'user' => $user,
         ], 200);
     }
