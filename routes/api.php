@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -30,12 +31,27 @@ Route::middleware('auth:api')->group(function () {
 
 Route::prefix('communities')->group(function () {
     Route::get('', [CommunityController::class, 'index']);
-    Route::get('{communityId}', [CommunityController::class, 'show']);
 
     Route::middleware('auth:api')->group(function () {
         Route::post('', [CommunityController::class, 'store']);
+        Route::get('joined', [CommunityController::class, 'joined']);
+    });
+
+    Route::get('{communityId}', [CommunityController::class, 'show']);
+
+    Route::middleware('auth:api')->group(function () {
         Route::delete('{communityId}', [CommunityController::class, 'delete']);
         Route::post('join/{communityId}', [CommunityController::class, 'join']);
         Route::post('leave/{communityId}', [CommunityController::class, 'leave']);
+    });
+});
+
+Route::prefix('posts')->group(function () {
+    Route::get('', [PostController::class, 'index']);
+    Route::get('{postId}', [PostController::class, 'show']);
+
+    Route::middleware('auth:api')->group(function () {
+        Route::post('', [PostController::class, 'store']);
+        Route::delete('{postId}', [PostController::class, 'delete']);
     });
 });

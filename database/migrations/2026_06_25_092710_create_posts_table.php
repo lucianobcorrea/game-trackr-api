@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->integer("likes")->default(0);
             $table->foreignIdFor(Community::class, 'community_id')->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class, 'author_id')->constrained()->cascadeOnDelete();

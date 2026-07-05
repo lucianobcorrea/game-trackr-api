@@ -10,8 +10,12 @@ class CommunityController extends Controller
 {
     public function index()
     {
+        $search = request('search');
         $perPage = min((int) request('per_page', 10), 100);
-        $communities = Community::with(['author', 'members', 'media'])->paginate($perPage);
+        $communities = Community::query()
+            ->when($search, fn($query) => $query->where('title', 'like', "%{$search}%"))
+            ->with(['author', 'members', 'media'])
+            ->paginate($perPage);
         $userId = auth()->id();
 
         $communities->getCollection()->transform(function ($community) use ($userId) {
@@ -24,7 +28,22 @@ class CommunityController extends Controller
             return $community;
         });
 
-        return response()->json($communities);
+        return response()->json($communities, 200);
+    }
+
+    public function joined()
+    {
+        $search = request('search');
+        $perPage = min((int) request('per_page', 10), 100);
+        $communities = Community::query()
+            ->whereHas('members', function ($query) {
+                $query->where('member_id', auth()->user()->id);
+            })
+            ->when($search, fn($query) => $query->where('title', 'like', "%{$search}%"))
+            ->with(['author', 'members', 'media'])
+            ->paginate($perPage);
+
+        return response()->json($communities, 200);
     }
 
     public function show($communityId)
@@ -59,7 +78,7 @@ class CommunityController extends Controller
 
         $community->members()->attach($request->user()->id);
 
-        return response()->json([        
+        return response()->json([
             'community' => $community,
             'message' => 'Community created successfully',
         ], 201);
