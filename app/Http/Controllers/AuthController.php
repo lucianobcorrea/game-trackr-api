@@ -193,6 +193,10 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Code already used'], 400);
             }
 
+            if ($request->password == auth()->user()->password) {
+                return response()->json(['error' => 'Password recently used. Try a different one.'], 400);
+            }
+
             User::where('email', $request->email)
                 ->update(['password' => bcrypt($request->password)]);
 
@@ -205,6 +209,10 @@ class AuthController extends Controller
                 'email' => 'required|email',
                 'password' => 'required|min:8|confirmed',
             ]);
+
+            if ($request->password == auth()->user()->password) {
+                return response()->json(['error' => 'Password recently used. Try a different one.'], 400);
+            }
 
             $status = Password::reset(
                 $request->only('email', 'password', 'password_confirmation', 'token'),
