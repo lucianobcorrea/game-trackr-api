@@ -1,19 +1,19 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 
-Route::get("/401", [AuthController::class, 'unauthorized'])->name('login');
+Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
 
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
-    Route::post("validate", [AuthController::class, "validateToken"]);
-    Route::post("logout", [AuthController::class, "logout"]);
+    Route::post('validate', [AuthController::class, 'validateToken']);
+    Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
@@ -53,5 +53,9 @@ Route::prefix('posts')->group(function () {
     Route::middleware('auth:api')->group(function () {
         Route::post('', [PostController::class, 'store']);
         Route::delete('{postId}', [PostController::class, 'delete']);
+        Route::post('{postId}/comment', [PostController::class, 'comment']);
+        Route::post('{postId}/comment/{commentId}/reply', [PostController::class, 'commentReply']);
+        Route::post('{postId}/like', [PostController::class, 'like']);
+        Route::post('{postId}/comment/{commentId}/like', [PostController::class, 'likeComment']);
     });
 });

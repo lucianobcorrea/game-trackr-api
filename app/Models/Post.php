@@ -21,4 +21,14 @@ class Post extends Model implements HasMedia
     {
         return $this->belongsTo(Community::class, 'community_id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(PostComment::class, 'post_id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(PostLike::class, 'post_id');
+    }
 }
