@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IgdbAuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +23,15 @@ Route::prefix('auth')->group(function () {
 
     Route::get('google/redirect', [GoogleAuthController::class, 'redirect']);
     Route::get('google/callback', [GoogleAuthController::class, 'callback']);
+});
+
+Route::prefix('home')->group(function () {
+    Route::get('new-releases', [HomeController::class, 'newReleases']);
+    Route::get('new-releases/all', [HomeController::class, 'allNewReleases']);
+});
+
+Route::prefix('igdb')->group(function () {
+    Route::post('auth', [IgdbAuthController::class, 'authenticate']);
 });
 
 Route::middleware('auth:api')->group(function () {

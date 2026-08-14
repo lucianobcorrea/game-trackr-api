@@ -39,6 +39,11 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT'),
-    ]
+    ],
+
+    'igdb' => [
+        'client_id' => env('TWITCH_CLIENT_ID', 'your_twitch_client_id_here'),
+        'client_secret' => env('TWITCH_CLIENT_SECRET', 'your_twitch_client_secret_here'),
+    ],
 
 ];
