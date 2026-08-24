@@ -3,22 +3,23 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Spatie\MediaLibrary\HasMedia;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 #[Fillable(['name', 'email', 'password', 'google_id'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements JWTSubject, HasMedia
+class User extends Authenticatable implements HasMedia, JWTSubject
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -33,14 +34,18 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         ];
     }
 
+    /** @var list<string> */
     protected $appends = ['avatar_url'];
 
-    public function getAvatarUrlAttribute()
+    public function getAvatarUrlAttribute(): string
     {
         return $this->getFirstMediaUrl('avatar');
     }
 
-    public function communities()
+    /**
+     * @return BelongsToMany<Community, $this>
+     */
+    public function communities(): BelongsToMany
     {
         return $this->belongsToMany(Community::class, 'community_members');
     }
@@ -50,6 +55,9 @@ class User extends Authenticatable implements JWTSubject, HasMedia
         return $this->getKey();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getJWTCustomClaims(): array
     {
         return [];

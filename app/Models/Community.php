@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -14,22 +16,28 @@ class Community extends Model implements HasMedia
 
     protected $appends = ['cover_url', 'avatar_url'];
 
-    public function getCoverUrlAttribute()
+    public function getCoverUrlAttribute(): string
     {
         return $this->getFirstMediaUrl('cover');
     }
 
-    public function getAvatarUrlAttribute()
+    public function getAvatarUrlAttribute(): string
     {
         return $this->getFirstMediaUrl('avatar');
     }
 
-    public function author()
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function members()
+    /**
+     * @return BelongsToMany<User, $this>
+     */
+    public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'community_members', 'community_id', 'member_id');
     }

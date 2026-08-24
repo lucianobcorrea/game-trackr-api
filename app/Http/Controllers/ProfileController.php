@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
 {
-    public function me()
+    public function me(): JsonResponse
     {
         $user = auth()->user();
+
         return response()->json([
             'user' => $user,
         ], 200);

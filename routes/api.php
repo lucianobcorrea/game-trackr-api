@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommunityController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IgdbAuthController;
@@ -25,13 +26,18 @@ Route::prefix('auth')->group(function () {
     Route::get('google/callback', [GoogleAuthController::class, 'callback']);
 });
 
+Route::get('games/{slug}', [GameController::class, 'show']);
+
 Route::prefix('home')->group(function () {
     Route::get('new-releases', [HomeController::class, 'newReleases']);
     Route::get('new-releases/all', [HomeController::class, 'allNewReleases']);
+    Route::get('most-anticipated', [HomeController::class, 'mostAnticipated']);
+    Route::get('most-anticipated/all', [HomeController::class, 'allMostAnticipated']);
 });
 
 Route::prefix('igdb')->group(function () {
     Route::post('auth', [IgdbAuthController::class, 'authenticate']);
+    Route::get('platforms', [GameController::class, 'platforms']);
 });
 
 Route::middleware('auth:api')->group(function () {

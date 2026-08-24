@@ -8,27 +8,28 @@ use App\Mail\PasswordResetCodeMail;
 use App\Models\PasswordResetCode;
 use App\Models\User;
 use App\Services\AuthService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
+use Exception;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Mail;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     public function __construct(
         private readonly AuthService $authService
-    ) {
-    }
+    ) {}
 
-    public function unauthorized()
+    public function unauthorized(): JsonResponse
     {
         return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-    public function register(CreateUserRequest $request)
+    public function register(CreateUserRequest $request): JsonResponse
     {
         $data = $request->validated();
         User::create($data);
@@ -39,7 +40,7 @@ class AuthController extends Controller
         ];
 
         $token = auth()->attempt($credentials);
-        if (!$token) {
+        if (! $token) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -52,9 +53,10 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $result = $this->authService->login($request->validated());
+
         return response()->json([
             'token' => $result['token'],
             'user' => $result['user'],
@@ -62,47 +64,52 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function validateToken()
+    public function validateToken(): JsonResponse
     {
         $user = auth()->user();
+
         return response()->json([
             'user' => $user,
         ], 200);
     }
 
-    public function logout()
+    public function logout(): JsonResponse
     {
         try {
             auth()->logout();
+
             return response()->json([
                 'message' => 'Successfully logged out',
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
-    public function refresh()
+    public function refresh(): JsonResponse
     {
         try {
             JWTAuth::setToken(request()->bearerToken());
             $token = JWTAuth::refresh();
+
             return response()->json(['token' => $token]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 401);
         }
     }
 
-    public function forgotPassword(Request $request)
+    public function forgotPassword(Request $request): JsonResponse
     {
         $request->validate(['email' => 'required|email']);
 
         $client = $request->input('client', 'web');
 
         if ($client === 'mobile') {
-            $code = random_int(100000, 999999);
+            $code = (string) random_int(100000, 999999);
 
-            $user = User::where('email', $request->email)->first();
+            /** @var string $email */
+            $email = $request->input('email');
+            $user = User::where('email', $email)->first();
 
             if ($user) {
                 PasswordResetCode::updateOrCreate(
@@ -114,58 +121,63 @@ class AuthController extends Controller
                     ]
                 );
 
-                Mail::to($request->email)->send(new PasswordResetCodeMail($code));
+                Mail::to($user->email)->send(new PasswordResetCodeMail($code));
             }
         } else {
             Password::sendResetLink($request->only('email'));
         }
 
         return response()->json([
-            'message' => 'If the email exists, instructions were sent.'
+            'message' => 'If the email exists, instructions were sent.',
         ]);
     }
 
-    public function verifyResetCode(Request $request)
+    public function verifyResetCode(Request $request): JsonResponse
     {
         $request->validate([
             'email' => 'required|email',
             'code' => 'required',
         ]);
 
-        $record = PasswordResetCode::where('email', $request->email)->first();
+        /** @var string $email */
+        $email = $request->input('email');
+        /** @var string $inputCode */
+        $inputCode = (string) $request->input('code');
 
-        if (!$record) {
+        $record = PasswordResetCode::where('email', $email)->first();
+
+        if (! $record) {
             return response()->json([
-                'error' => 'Invalid code'
+                'error' => 'Invalid code',
             ], 400);
         }
 
-        if (!hash_equals($record->code, hash('sha256', $request->code))) {
+        if (! hash_equals($record->code, hash('sha256', $inputCode))) {
             return response()->json([
-                'error' => 'Invalid code'
+                'error' => 'Invalid code',
             ], 400);
         }
 
         if ($record->expires_at->isPast()) {
             return response()->json([
-                'error' => 'Code expired'
+                'error' => 'Code expired',
             ], 400);
         }
 
         if ($record->used_at != null) {
             return response()->json([
-                'error' => 'Code already used'
+                'error' => 'Code already used',
             ], 400);
         }
 
         $record->update(['verified_at' => now()]);
 
         return response()->json([
-            'message' => 'Code verified successfully'
+            'message' => 'Code verified successfully',
         ], 200);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): JsonResponse
     {
         $client = $request->input('client', 'web');
 
@@ -175,13 +187,15 @@ class AuthController extends Controller
                 'password' => 'required|min:6|confirmed',
             ]);
 
-            $record = PasswordResetCode::where('email', $request->email)->first();
+            /** @var string $email */
+            $email = $request->input('email');
+            $record = PasswordResetCode::where('email', $email)->first();
 
-            if (!$record) {
+            if (! $record) {
                 return response()->json(['error' => 'Invalid request'], 400);
             }
 
-            if (!$record->verified_at) {
+            if (! $record->verified_at) {
                 return response()->json(['error' => 'Code not verified'], 400);
             }
 
@@ -193,12 +207,11 @@ class AuthController extends Controller
                 return response()->json(['error' => 'Code already used'], 400);
             }
 
-            if ($request->password == auth()->user()->password) {
-                return response()->json(['error' => 'Password recently used. Try a different one.'], 400);
-            }
+            /** @var string $password */
+            $password = (string) $request->input('password');
 
-            User::where('email', $request->email)
-                ->update(['password' => bcrypt($request->password)]);
+            User::where('email', $email)
+                ->update(['password' => bcrypt($password)]);
 
             $record->update(['used_at' => now()]);
 
@@ -210,15 +223,11 @@ class AuthController extends Controller
                 'password' => 'required|min:8|confirmed',
             ]);
 
-            if ($request->password == auth()->user()->password) {
-                return response()->json(['error' => 'Password recently used. Try a different one.'], 400);
-            }
-
             $status = Password::reset(
                 $request->only('email', 'password', 'password_confirmation', 'token'),
                 function (User $user, string $password) {
                     $user->forceFill([
-                        'password' => Hash::make($password)
+                        'password' => Hash::make($password),
                     ])->setRememberToken(Str::random(60));
 
                     $user->save();

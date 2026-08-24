@@ -1,0 +1,583 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Exceptions\\InvalidCredentialsException\:\:render\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Exceptions/InvalidCredentialsException.php
+
+		-
+			message: '#^Call to static method to\(\) on an unknown class Mail\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:forgotPassword\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:login\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:logout\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:refresh\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:register\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:resetPassword\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:unauthorized\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:validateToken\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AuthController\:\:verifyResetCode\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$code of class App\\Mail\\PasswordResetCodeMail constructor expects string, int\<100000, 999999\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#2 \$data of function hash expects string, int\<100000, 999999\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Community\:\:\$is_member\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Community\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Community\>\:\:\$author_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Community\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Community\>\:\:delete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Community\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Community\>\:\:members\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Call to static method slug\(\) on an unknown class Str\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:delete\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:delete\(\) has parameter \$communityId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:join\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:join\(\) has parameter \$communityId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:joined\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:leave\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:leave\(\) has parameter \$communityId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:show\(\) has parameter \$communityId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\CommunityController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/CommunityController.php
+
+		-
+			message: '#^Call to an undefined method Laravel\\Socialite\\Contracts\\Provider\:\:stateless\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Controllers/GoogleAuthController.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 2
+			path: app/Http/Controllers/GoogleAuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\GoogleAuthController\:\:callback\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/GoogleAuthController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\GoogleAuthController\:\:redirect\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/GoogleAuthController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Post\:\:\$is_liked\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\PostComment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\PostComment\>\:\:\$likes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:\$author_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:\$comments\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:\$is_liked\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:\$likes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$is_liked\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\PostComment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\PostComment\>\:\:decrement\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\PostComment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\PostComment\>\:\:increment\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\PostComment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\PostComment\>\:\:likes\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\PostComment\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\PostComment\>\:\:replies\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:comments\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:decrement\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:delete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:increment\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Post\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Post\>\:\:likes\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:likes\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:comment\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:comment\(\) has parameter \$postId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:commentReply\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:commentReply\(\) has parameter \$commentId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:commentReply\(\) has parameter \$postId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:delete\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:delete\(\) has parameter \$postId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:index\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:like\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:like\(\) has parameter \$postId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:likeComment\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:likeComment\(\) has parameter \$commentId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:likeComment\(\) has parameter \$postId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:show\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:show\(\) has parameter \$postId with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PostController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Property App\\Models\\Post\:\:\$comments is not writable\.$#'
+			identifier: assign.propertyReadOnly
+			count: 1
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 2
+			path: app/Http/Controllers/PostController.php
+
+		-
+			message: '#^Method App\\Mail\\PasswordResetCodeMail\:\:attachments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Mail/PasswordResetCodeMail.php
+
+		-
+			message: '#^Method App\\Models\\Community\:\:author\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Community.php
+
+		-
+			message: '#^Method App\\Models\\Community\:\:members\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Community.php
+
+		-
+			message: '#^Method App\\Models\\Post\:\:author\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Post.php
+
+		-
+			message: '#^Method App\\Models\\Post\:\:comments\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Post.php
+
+		-
+			message: '#^Method App\\Models\\Post\:\:community\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Post.php
+
+		-
+			message: '#^Method App\\Models\\Post\:\:likes\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Post.php
+
+		-
+			message: '#^Method App\\Models\\PostComment\:\:author\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostComment.php
+
+		-
+			message: '#^Method App\\Models\\PostComment\:\:likes\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostComment.php
+
+		-
+			message: '#^Method App\\Models\\PostComment\:\:parent\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostComment.php
+
+		-
+			message: '#^Method App\\Models\\PostComment\:\:post\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostComment.php
+
+		-
+			message: '#^Method App\\Models\\PostComment\:\:replies\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostComment.php
+
+		-
+			message: '#^Method App\\Models\\PostCommentLike\:\:comment\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostCommentLike.php
+
+		-
+			message: '#^Method App\\Models\\PostCommentLike\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostCommentLike.php
+
+		-
+			message: '#^Method App\\Models\\PostLike\:\:post\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostLike.php
+
+		-
+			message: '#^Method App\\Models\\PostLike\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PostLike.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:communities\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Method App\\Services\\AuthService\:\:login\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Services/AuthService.php
+
+		-
+			message: '#^Method App\\Services\\AuthService\:\:login\(\) has parameter \$credentials with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/AuthService.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:forgotPassword\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:login\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:logout\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:refresh\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:register\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:resetPassword\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:unauthorized\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:validateToken\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php
+
+		-
+			message: '#^Method App\\Swagger\\AuthControllerDocs\:\:verifyResetCode\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Swagger/AuthControllerDocs.php

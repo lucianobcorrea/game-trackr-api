@@ -3,35 +3,47 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\AbstractProvider;
+use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 class GoogleAuthController extends Controller
 {
-    public function redirect()
+    public function redirect(): SymfonyRedirectResponse
     {
-        return Socialite::driver('google')->stateless()->redirect();
+        /** @var AbstractProvider $provider */
+        $provider = Socialite::driver('google');
+
+        return $provider->stateless()->redirect();
     }
 
-    public function callback()
+    public function callback(): RedirectResponse
     {
+        $frontendUrl = (string) config('app.frontend_url', 'http://localhost:5174');
+
         try {
-            $googleUser = Socialite::driver('google')->stateless()->user();
+            /** @var AbstractProvider $provider */
+            $provider = Socialite::driver('google');
+            /** @var \Laravel\Socialite\Two\User $googleUser */
+            $googleUser = $provider->stateless()->user();
 
             $user = User::updateOrCreate(
-                ['google_id' => $googleUser->id],
+                ['google_id' => $googleUser->getId()],
                 [
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
                     'password' => Str::random(32),
                 ]
             );
 
             $token = auth()->login($user);
 
-            return redirect(env('FRONTEND_URL') . "/auth/callback?token={$token}");
-        } catch (\Exception $e) {
-            return redirect(env('FRONTEND_URL') . "/auth/error");
+            return redirect("{$frontendUrl}/auth/callback?token={$token}");
+        } catch (Exception) {
+            return redirect("{$frontendUrl}/auth/error");
         }
     }
 }

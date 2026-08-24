@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -12,22 +14,34 @@ class Post extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
-    public function author()
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function community()
+    /**
+     * @return BelongsTo<Community, $this>
+     */
+    public function community(): BelongsTo
     {
         return $this->belongsTo(Community::class, 'community_id');
     }
 
-    public function comments()
+    /**
+     * @return HasMany<PostComment, $this>
+     */
+    public function comments(): HasMany
     {
         return $this->hasMany(PostComment::class, 'post_id');
     }
 
-    public function likes()
+    /**
+     * @return HasMany<PostLike, $this>
+     */
+    public function likes(): HasMany
     {
         return $this->hasMany(PostLike::class, 'post_id');
     }

@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -14,8 +15,7 @@ class PasswordResetCodeMail extends Mailable
 
     public function __construct(
         public string $code,
-    ) {
-    }
+    ) {}
 
     public function envelope(): Envelope
     {
@@ -34,6 +34,9 @@ class PasswordResetCodeMail extends Mailable
         );
     }
 
+    /**
+     * @return array<int, Attachment>
+     */
     public function attachments(): array
     {
         return [];
