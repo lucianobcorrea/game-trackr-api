@@ -47,7 +47,22 @@ class GameController extends Controller
     {
         try {
             $limit = (int) $request->input('limit', 50);
-            $platforms = $this->igdbGameService->getPlatforms(limit: $limit);
+            $page = (int) $request->input('page', 1);
+            $search = $request->input('search');
+            $category = $request->input('category');
+            $all = $request->boolean('all', false);
+
+            if (is_string($category) && str_contains($category, ',')) {
+                $category = array_map('intval', explode(',', $category));
+            }
+
+            $platforms = $this->igdbGameService->getPlatforms(
+                limit: $limit,
+                page: $page,
+                search: $search !== null && trim((string) $search) !== '' ? (string) $search : null,
+                category: $category !== null ? (is_array($category) ? $category : (int) $category) : null,
+                onlyPopular: ! $all
+            );
 
             return response()->json([
                 'message' => 'Platforms fetched successfully.',

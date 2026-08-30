@@ -27,6 +27,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::get('games/{slug}', [GameController::class, 'show']);
+Route::get('platforms', [GameController::class, 'platforms']);
 
 Route::prefix('home')->group(function () {
     Route::get('new-releases', [HomeController::class, 'newReleases']);

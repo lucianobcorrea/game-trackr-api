@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\AbstractProvider;
@@ -12,17 +13,26 @@ use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse
 
 class GoogleAuthController extends Controller
 {
-    public function redirect(): SymfonyRedirectResponse
+    public function redirect(Request $request): SymfonyRedirectResponse
     {
         /** @var AbstractProvider $provider */
         $provider = Socialite::driver('google');
 
-        return $provider->stateless()->redirect();
+        $state = $request->query('state') ?? ($request->query('platform') === 'mobile' || $request->boolean('is_mobile') ? 'mobile' : 'web');
+
+        return $provider->stateless()->with(['state' => $state])->redirect();
     }
 
-    public function callback(): RedirectResponse
+    public function callback(Request $request): RedirectResponse
     {
-        $frontendUrl = (string) config('app.frontend_url', 'http://localhost:5174');
+        $state = (string) $request->query('state');
+        $isMobile = $state === 'mobile'
+            || $request->query('platform') === 'mobile'
+            || $request->boolean('is_mobile');
+
+        $base = $isMobile
+            ? 'gametrackr://auth'
+            : rtrim((string) config('app.frontend_url', 'http://localhost:5174'), '/') . '/auth';
 
         try {
             /** @var AbstractProvider $provider */
@@ -41,9 +51,10 @@ class GoogleAuthController extends Controller
 
             $token = auth()->login($user);
 
-            return redirect("{$frontendUrl}/auth/callback?token={$token}");
+            return redirect("{$base}/callback?token={$token}");
         } catch (Exception) {
-            return redirect("{$frontendUrl}/auth/error");
+            return redirect("{$base}/error");
         }
     }
 }
+

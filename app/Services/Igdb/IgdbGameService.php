@@ -49,16 +49,69 @@ class IgdbGameService
     }
 
     /**
-     * Fetch platforms from IGDB for frontend filters.
+     * Common popular platform IDs on IGDB.
+     */
+    public const POPULAR_PLATFORM_IDS = [
+        6,   // PC (Microsoft Windows)
+        167, // PlayStation 5
+        48,  // PlayStation 4
+        169, // Xbox Series X|S
+        49,  // Xbox One
+        130, // Nintendo Switch
+    ];
+
+    /**
+     * Fetch platforms from IGDB for frontend/mobile filters.
      *
+     * @param  int  $limit
+     * @param  int  $page
+     * @param  string|null  $search
+     * @param  array<int>|int|null  $category
+     * @param  bool  $onlyPopular
      * @return array<int, array<string, mixed>>
      */
-    public function getPlatforms(int $limit = 50): array
-    {
-        $query = 'fields name, slug, abbreviation, platform_logo.url; '
-            .'where category = (1, 5, 6); '
+    public function getPlatforms(
+        int $limit = 50,
+        int $page = 1,
+        ?string $search = null,
+        array|int|null $category = null,
+        bool $onlyPopular = true
+    ): array {
+        $limit = max(1, min(500, $limit));
+        $page = max(1, $page);
+        $offset = ($page - 1) * $limit;
+
+        $fields = 'fields name, slug, abbreviation, alternative_name, category, generation, platform_logo.url, platform_logo.image_id, platform_family.name, platform_family.slug, summary;';
+
+        $whereConditions = [];
+
+        if ($onlyPopular && ($search === null || trim($search) === '') && $category === null) {
+            $popularIds = implode(',', self::POPULAR_PLATFORM_IDS);
+            $whereConditions[] = "id = ({$popularIds})";
+        }
+
+        if ($category !== null) {
+            if (is_array($category)) {
+                $categoryIds = implode(',', array_map('intval', $category));
+                $whereConditions[] = "category = ({$categoryIds})";
+            } else {
+                $catId = (int) $category;
+                $whereConditions[] = "category = {$catId}";
+            }
+        }
+
+        if ($search !== null && trim($search) !== '') {
+            $escapedSearch = addslashes(trim($search));
+            $whereConditions[] = "name ~ *\"{$escapedSearch}\"*";
+        }
+
+        $whereClause = ! empty($whereConditions) ? 'where '.implode(' & ', $whereConditions).'; ' : '';
+
+        $query = "{$fields} "
+            .$whereClause
             .'sort name asc; '
-            ."limit {$limit};";
+            ."limit {$limit}; "
+            ."offset {$offset};";
 
         /** @var array<int, array<string, mixed>> $platforms */
         $platforms = $this->client->query('platforms', $query);
