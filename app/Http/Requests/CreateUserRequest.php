@@ -26,6 +26,8 @@ class CreateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'username' => 'nullable|string|max:50|unique:users,username',
+            'profile_color' => 'nullable|string|max:9',
         ];
     }
 

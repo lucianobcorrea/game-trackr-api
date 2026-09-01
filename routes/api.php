@@ -26,7 +26,11 @@ Route::prefix('auth')->group(function () {
     Route::get('google/callback', [GoogleAuthController::class, 'callback']);
 });
 
-Route::get('games/{slug}', [GameController::class, 'show']);
+Route::prefix('games')->group(function () {
+    Route::get('search', [GameController::class, 'search']);
+    Route::get('{slug}', [GameController::class, 'show']);
+});
+
 Route::get('platforms', [GameController::class, 'platforms']);
 
 Route::prefix('home')->group(function () {
@@ -44,6 +48,8 @@ Route::prefix('igdb')->group(function () {
 Route::middleware('auth:api')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('me', [ProfileController::class, 'me']);
+        Route::patch('', [ProfileController::class, 'update']);
+        Route::get('colors', [ProfileController::class, 'colors']);
     });
 });
 

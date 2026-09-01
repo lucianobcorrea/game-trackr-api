@@ -76,4 +76,40 @@ class GameController extends Controller
             ], $statusCode);
         }
     }
+
+    /**
+     * Global game search.
+     */
+    public function search(Request $request): JsonResponse
+    {
+        try {
+            $page = (int) $request->input('page', 1);
+            $perPage = (int) $request->input('per_page', $request->input('limit', 15));
+            $search = $request->input('search', $request->input('query'));
+            $platform = $request->input('platform', $request->input('platforms'));
+
+            $searchStr = is_string($search) ? $search : null;
+            /** @var string|int|array<int, string|int>|null $platformVal */
+            $platformVal = (is_string($platform) || is_int($platform) || is_array($platform)) ? $platform : null;
+
+            $result = $this->igdbGameService->searchGames(
+                limit: $perPage,
+                page: $page,
+                search: $searchStr,
+                platform: $platformVal
+            );
+
+            return response()->json([
+                'message' => 'Games searched successfully.',
+                'data' => $result['data'],
+                'meta' => $result['meta'],
+            ], 200);
+        } catch (Throwable $e) {
+            $statusCode = $e->getCode() >= 400 && $e->getCode() < 600 ? $e->getCode() : 500;
+
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], $statusCode);
+        }
+    }
 }
