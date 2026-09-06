@@ -82,18 +82,37 @@ describe('User Profile Initialization', function () {
         expect(count($response->json('data')))->toBeGreaterThan(0);
     });
 
-    it('allows authenticated user to update their profile_color and username via PATCH or PUT', function () {
+    it('allows authenticated user to update their profile_color, username, visibility, and bio via PATCH', function () {
         $user = User::factory()->create();
+        expect($user->visibility)->toBe('public');
+        expect($user->bio)->toBeNull();
+
         $token = auth()->login($user);
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
             ->patchJson('/api/profile', [
                 'username' => 'new_username',
                 'profile_color' => '3b82f6',
+                'visibility' => 'private',
+                'bio' => 'Gamer & developer passionate about RPGs.',
             ]);
 
         $response->assertOk();
         $response->assertJsonPath('user.username', 'new_username');
         $response->assertJsonPath('user.profile_color', '#3B82F6');
+        $response->assertJsonPath('user.visibility', 'private');
+        $response->assertJsonPath('user.bio', 'Gamer & developer passionate about RPGs.');
+    });
+
+    it('rejects invalid visibility options', function () {
+        $user = User::factory()->create();
+        $token = auth()->login($user);
+
+        $response = $this->withHeader('Authorization', "Bearer {$token}")
+            ->patchJson('/api/profile', [
+                'visibility' => 'invalid_option',
+            ]);
+
+        $response->assertStatus(422);
     });
 });

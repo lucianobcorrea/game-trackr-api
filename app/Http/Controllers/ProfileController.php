@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -35,27 +34,12 @@ class ProfileController extends Controller
     /**
      * Update user profile settings.
      */
-    public function update(Request $request): JsonResponse
+    public function update(UpdateProfileRequest $request): JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
 
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'username' => [
-                'sometimes',
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('users', 'username')->ignore($user->id),
-            ],
-            'profile_color' => [
-                'sometimes',
-                'required',
-                'string',
-                'max:9',
-            ],
-        ]);
+        $validated = $request->validated();
 
         if (isset($validated['profile_color'])) {
             $validated['profile_color'] = User::normalizeHexColor($validated['profile_color']);

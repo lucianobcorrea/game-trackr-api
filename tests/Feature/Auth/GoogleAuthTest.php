@@ -3,7 +3,6 @@
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
-use Mockery\MockInterface;
 
 describe('Google Auth', function () {
     it('redirects to Google with state parameter for mobile', function () {
@@ -65,14 +64,27 @@ describe('Google Auth', function () {
         $response->assertRedirect('gametrackr://auth/error');
     });
 
-    it('redirects to web error url on failure if web', function () {
+    it('links google_id to existing user account if email already exists', function () {
+        $existingUser = User::factory()->create([
+            'email' => 'existing@example.com',
+            'google_id' => null,
+        ]);
+
+        $googleUser = (new SocialiteUser)->map([
+            'id' => '555666777',
+            'name' => 'Existing User',
+            'email' => 'existing@example.com',
+        ]);
+
         Socialite::shouldReceive('driver->stateless->user')
             ->once()
-            ->andThrow(new Exception('Google error'));
+            ->andReturn($googleUser);
 
         $response = $this->get('/api/auth/google/callback');
-        $frontendUrl = config('app.frontend_url', 'http://localhost:5174');
 
-        $response->assertRedirect("{$frontendUrl}/auth/error");
+        $response->assertRedirect();
+
+        $existingUser->refresh();
+        expect($existingUser->google_id)->toBe('555666777');
     });
 });

@@ -15,12 +15,21 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-#[Fillable(['name', 'email', 'password', 'google_id', 'username', 'profile_color'])]
+#[Fillable(['name', 'email', 'password', 'google_id', 'username', 'profile_color', 'visibility', 'bio'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements HasMedia, JWTSubject
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, InteractsWithMedia, Notifiable;
+
+    public const VISIBILITY_PUBLIC = 'public';
+
+    public const VISIBILITY_PRIVATE = 'private';
+
+    public const VISIBILITY_OPTIONS = [
+        self::VISIBILITY_PUBLIC,
+        self::VISIBILITY_PRIVATE,
+    ];
 
     protected static function booted(): void
     {
@@ -35,6 +44,10 @@ class User extends Authenticatable implements HasMedia, JWTSubject
                 $user->profile_color = static::generateRandomProfileColor();
             } else {
                 $user->profile_color = static::normalizeHexColor($user->profile_color);
+            }
+
+            if (empty($user->visibility)) {
+                $user->visibility = self::VISIBILITY_PUBLIC;
             }
         });
     }

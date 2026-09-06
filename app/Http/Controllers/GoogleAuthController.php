@@ -40,14 +40,26 @@ class GoogleAuthController extends Controller
             /** @var \Laravel\Socialite\Two\User $googleUser */
             $googleUser = $provider->stateless()->user();
 
-            $user = User::updateOrCreate(
-                ['google_id' => $googleUser->getId()],
-                [
+            $googleId = $googleUser->getId();
+            $googleEmail = $googleUser->getEmail();
+
+            /** @var User|null $user */
+            $user = User::where('google_id', $googleId)
+                ->orWhere('email', $googleEmail)
+                ->first();
+
+            if ($user) {
+                $user->update([
+                    'google_id' => $googleId,
+                ]);
+            } else {
+                $user = User::create([
+                    'google_id' => $googleId,
                     'name' => $googleUser->getName(),
-                    'email' => $googleUser->getEmail(),
+                    'email' => $googleEmail,
                     'password' => Str::random(32),
-                ]
-            );
+                ]);
+            }
 
             $token = auth()->login($user);
 
