@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IgdbAuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserSetupController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/401', [AuthController::class, 'unauthorized'])->name('login');
@@ -50,6 +51,15 @@ Route::middleware('auth:api')->group(function () {
         Route::get('me', [ProfileController::class, 'me']);
         Route::patch('', [ProfileController::class, 'update']);
         Route::get('colors', [ProfileController::class, 'colors']);
+
+        Route::prefix('setups')->group(function () {
+            Route::get('', [UserSetupController::class, 'index']);
+            Route::post('', [UserSetupController::class, 'store']);
+            Route::get('{setup}', [UserSetupController::class, 'show']);
+            Route::match(['put', 'patch', 'post'], '{setup}', [UserSetupController::class, 'update']);
+            Route::delete('{setup}', [UserSetupController::class, 'delete']);
+            Route::delete('{setup}/images/{mediaId}', [UserSetupController::class, 'deleteImage']);
+        });
     });
 });
 

@@ -13,7 +13,9 @@ class ProfileController extends Controller
      */
     public function me(): JsonResponse
     {
+        /** @var User $user */
         $user = auth()->user();
+        $user?->load(['setups.media']);
 
         return response()->json([
             'user' => $user,

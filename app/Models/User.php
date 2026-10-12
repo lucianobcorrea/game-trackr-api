@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -64,7 +65,7 @@ class User extends Authenticatable implements HasMedia, JWTSubject
         $counter = 1;
 
         while (static::where('username', $username)->when($ignoreUserId, fn ($q) => $q->where('id', '!=', $ignoreUserId))->exists()) {
-            $username = $base . $counter;
+            $username = $base.$counter;
             $counter++;
         }
 
@@ -147,6 +148,14 @@ class User extends Authenticatable implements HasMedia, JWTSubject
         return $this->belongsToMany(Community::class, 'community_members');
     }
 
+    /**
+     * @return HasMany<UserSetup, $this>
+     */
+    public function setups(): HasMany
+    {
+        return $this->hasMany(UserSetup::class);
+    }
+
     public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
@@ -160,4 +169,3 @@ class User extends Authenticatable implements HasMedia, JWTSubject
         return [];
     }
 }
-
