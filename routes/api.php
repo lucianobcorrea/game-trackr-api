@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IgdbAuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserGameController;
 use App\Http\Controllers\UserSetupController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +60,15 @@ Route::middleware('auth:api')->group(function () {
             Route::match(['put', 'patch', 'post'], '{setup}', [UserSetupController::class, 'update']);
             Route::delete('{setup}', [UserSetupController::class, 'delete']);
             Route::delete('{setup}/images/{mediaId}', [UserSetupController::class, 'deleteImage']);
+        });
+
+        Route::prefix('games')->group(function () {
+            Route::get('', [UserGameController::class, 'index']);
+            Route::get('breakdown', [UserGameController::class, 'breakdown']);
+            Route::post('', [UserGameController::class, 'store']);
+            Route::get('{id}', [UserGameController::class, 'show']);
+            Route::patch('{id}', [UserGameController::class, 'update']);
+            Route::delete('{id}', [UserGameController::class, 'destroy']);
         });
     });
 });

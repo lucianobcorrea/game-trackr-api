@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
+use App\Models\UserGame;
 use Illuminate\Http\JsonResponse;
 
 class ProfileController extends Controller
@@ -16,6 +17,10 @@ class ProfileController extends Controller
         /** @var User $user */
         $user = auth()->user();
         $user?->load(['setups.media']);
+
+        if ($user) {
+            $user->setAttribute('games_breakdown', UserGame::getBreakdownForUser($user->id));
+        }
 
         return response()->json([
             'user' => $user,

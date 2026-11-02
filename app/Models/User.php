@@ -156,6 +156,14 @@ class User extends Authenticatable implements HasMedia, JWTSubject
         return $this->hasMany(UserSetup::class);
     }
 
+    /**
+     * @return HasMany<UserGame, $this>
+     */
+    public function games(): HasMany
+    {
+        return $this->hasMany(UserGame::class);
+    }
+
     public function getJWTIdentifier(): mixed
     {
         return $this->getKey();
